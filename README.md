@@ -9,7 +9,7 @@ CISC 3171: Introduction to Software Engineering. Brooklyn College (CUNY), Fall 2
 - Paul Cobourne
 - Joshua Goosby
 - Eugene Ye
-- Issac Alao
+- Isaac Alao
 
 ## Features (planned)
 
