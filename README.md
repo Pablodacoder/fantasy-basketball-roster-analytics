@@ -20,7 +20,7 @@ CISC 3171: Introduction to Software Engineering. Brooklyn College (CUNY), Fall 2
 
 ## Documents
 
-- [Requirements Document](docs/Fantasy_Basketball_Roster_Analytics.docx)
+- [Requirements Document](https://docs.google.com/document/d/1JOPd8dFE3eOebjn9jTKG8Av_IbeI8X8VwqvVVmIY9mg/edit?tab=t.0)
 
 ## Project Status
 
