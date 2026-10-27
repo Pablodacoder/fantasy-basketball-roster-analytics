@@ -1,0 +1,9 @@
+django>=4.2
+psycopg[binary]
+nba_api
+pandas
+scipy
+argon2-cffi
+whitenoise
+gunicorn
+dj-database-url
