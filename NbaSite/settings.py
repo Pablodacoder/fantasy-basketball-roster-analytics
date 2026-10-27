@@ -125,3 +125,28 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+
+# ---- Added for Group 6 project ----
+import dj_database_url
+
+INSTALLED_APPS += ["accounts", "nba", "league"]
+
+DATABASES = {
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+    )
+}
+
+# Accounts and saving track
+AUTH_USER_MODEL = "accounts.User"
+
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+]
+
+SESSION_COOKIE_AGE = 1800            # 30 minutes (S9.2)
+SESSION_SAVE_EVERY_REQUEST = True    # resets the timer on activity
+PASSWORD_RESET_TIMEOUT = 3600        # 1 hour (S9.4)
