@@ -1,0 +1,17 @@
+{% comment %}
+Put this line in head 
+{% include "nav_bar.html" with page=request.resolver_match.url_name %}
+{% endcomment %}
+
+<nav class="nav nav-tabs">
+  <a class="nav-link {% if page == 'home' %}active{% endif %}" 
+    href="{% url 'home' %}">Home</a>
+  <a class="nav-link {% if page == 'roster' %}active{% endif %}" 
+    href="{% url 'roster' %}">Roster</a>
+  <a class="nav-link {% if page == 'trade' %}active{% endif %}" 
+    href="{% url 'trade' %}">Trade</a>
+  <a class="nav-link {% if page == 'league' %}active{% endif %}" 
+    href="{% url 'league' %}">League</a>
+  <a class="nav-link {% if page == 'scoring' %}active{% endif %}" 
+    href="{% url 'scoring' %}">Scoring</a>
+</nav>

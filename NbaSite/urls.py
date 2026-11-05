@@ -17,6 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from league import views
+
 urlpatterns = [
+    path('', views.home, name='home'),
+    path('roster', views.roster, name='roster'),
+    path('trade', views.trade, name='trade'),
+    path('league', views.league, name='league'),
+    path('scoring', views.scoring, name='scoring'),
     path('admin/', admin.site.urls),
 ]

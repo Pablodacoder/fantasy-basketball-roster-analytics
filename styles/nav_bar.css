@@ -1,0 +1,20 @@
+/*
+Need to include at the top of the html
+{% load static %}
+
+it is then linked with
+<link rel="stylesheet" href={% static 'nav_bar.css' %}>
+*/
+
+nav a {
+  color: black;
+  padding: 10px;
+  margin: 5px;
+}
+
+.active {
+  color: aliceblue;
+  font-weight: bold;
+  background-color: darkslategray;
+  border: 1px solid black;
+}
