@@ -132,7 +132,13 @@ MAILERS = {
 
 
 # ---- Added for Group 6 project ----
+import os #Added
 import dj_database_url
+from dotenv import load_dotenv #Added
+
+load_dotenv(BASE_DIR / ".env") 
+
+SECRET_KEY = os.environ
 
 INSTALLED_APPS += ["accounts", "nba", "league"]
 
@@ -153,4 +159,16 @@ PASSWORD_HASHERS = [
 
 SESSION_COOKIE_AGE = 1800            # 30 minutes (S9.2)
 SESSION_SAVE_EVERY_REQUEST = True    # resets the timer on activity
-PASSWORD_RESET_TIMEOUT = 3600        # 1 hour (S9.4)
+PASSWORD_RESET_TIMEOUT = 3600.       # 1 hour (S9.4)
+
+# Data and engine tracking (Milestone 1)
+TIME_ZONE = "America/New_York"
+INJURY_SOURCE = os.environ.get("INJURY_SOURCE", "espn")
+BALLDONTLIE_API_KEY = os.environ.get("BALLDONTLIE_API_KEY", "")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {"nba": {"handlers": ["console"], "level": "INFO"}},
+}
