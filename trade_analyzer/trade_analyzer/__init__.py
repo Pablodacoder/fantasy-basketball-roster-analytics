@@ -92,3 +92,60 @@ def get_blended_baseline(last_season_boxes, current_season_boxes, season_mode="b
         "mode": "both",
         "weights": {"current": round(curr_weight, 2), "last": round(last_weight, 2)}
     }
+    def calculate_advanced_metrics(averages):
+    """
+    Computes True Shooting Percentage (TS%) and Points Responsible For (PRF)
+    from a per-game averages dictionary.
+    """
+    pts = averages.get("pts", 0.0)
+    ast = averages.get("ast", 0.0)
+    fga = averages.get("fga", 0.0)
+    fta = averages.get("fta", 0.0)
+    
+    # True Shooting Percentage: PTS / (2 * (FGA + 0.44 * FTA))
+    ts_denom = 2.0 * (fga + (0.44 * fta))
+    ts_pct = round((pts / ts_denom) * 100.0, 1) if ts_denom > 0 else 0.0
+    
+    # Points Responsible For: PTS + (2.2 * AST)
+    prf = round(pts + (2.2 * ast), 1)
+    
+    return {
+        "ts_pct": ts_pct,
+        "prf": prf
+    }
+
+
+def get_rolling_window_baseline(current_boxes, last_season_boxes, window_size, allow_cross_season_fallback=True):
+    """
+    Computes rolling game window averages (e.g. past 5, 10, 15, 20, 25, 40, 65 games).
+    If current season games are less than the requested window and fallback is enabled,
+    it fills the remaining gap using the most recent games from the previous season.
+    """
+    curr_count = len(current_boxes)
+    
+    if curr_count >= window_size:
+        target_boxes = current_boxes[-window_size:]
+        status = "current_season_only"
+    elif allow_cross_season_fallback:
+        needed = window_size - curr_count
+        last_count = len(last_season_boxes)
+        backfill_boxes = last_season_boxes[-needed:] if needed <= last_count else last_season_boxes
+        target_boxes = list(current_boxes) + list(backfill_boxes)
+        status = f"cross_season_fallback (Used {curr_count} current + {len(backfill_boxes)} past season games)"
+    else:
+        return {
+            "error": "insufficient_games",
+            "message": f"Not enough games this season ({curr_count}/{window_size}). Please select a smaller sample size or enable the cross-season fallback."
+        }
+        
+    averages, gp = calculate_per_game_averages(target_boxes)
+    p36 = calculate_per_36_rates(target_boxes)
+    advanced = calculate_advanced_metrics(averages)
+    
+    return {
+        "per_game": averages,
+        "per_36": p36,
+        "advanced": advanced,
+        "games_played": gp,
+        "status": status
+    }
