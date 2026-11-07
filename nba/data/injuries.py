@@ -64,3 +64,51 @@ def fetch_espn():
 
 
 BDL_URL = "https://api.balldontlie.io/v1/player_injuries"
+
+
+def fetch_balldontlie():
+    if not settings.BALLDONTLIE_API_KEY:
+        raise RuntimeError("Set BALLDONTLIE_API_KEY in .env to use balldontlie")
+
+    rows = []
+    cursor = None
+    while True:
+        params = {"per_page": 100}
+        if cursor:
+            params["cursor"] = cursor
+        response = requests.get(BDL_URL, headers={"Authorization": settings.BALLDONTLIE_API_KEY},
+                                params=params, timeout=30)
+        response.raise_for_status()
+        body = response.json()
+        for item in body.get("data", []):
+            player = item.get("player", {})
+            rows.append({
+                "player_name": f"{player.get('first_name', '')} {player.get('last_name', '')}".strip(),
+                "team": str(player.get("team_id", "")),
+                "raw_status": item.get("status", ""),
+                "note": (item.get("description") or "")[:200],
+                "reported_at": None,
+            })
+        cursor = body.get("meta", {}).get("next_cursor")
+        if not cursor:
+            break
+        time.sleep(0.6)
+    return rows
+
+
+def fetch_official_report():
+    # TODO: parse the NBA's official injury report PDF if it wins the comparison
+    raise NotImplementedError("Official injury report parser isn't built yet")
+
+
+SOURCES = {
+    "espn": fetch_espn,
+    "balldontlie": fetch_balldontlie,
+    "official": fetch_official_report,
+}
+
+
+def fetch_injuries(source):
+    if source not in SOURCES:
+        raise ValueError(f"Unknown injury source '{source}'. Pick one of {list(SOURCES)}")
+    return SOURCES[source]()
