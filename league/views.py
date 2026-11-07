@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from engine import player
 
 
 # Create your views here.
