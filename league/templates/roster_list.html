@@ -1,0 +1,17 @@
+<div class="roster-container" style="height: 400px; width: 50%; border: 1px solid blue">
+  <h3>My Roster</h3>
+  <table style="width: 100%">
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+      {% for role, player in roster_list.items %}
+        <tr>
+          <td style="font-weight: bold;">{{role}}</td> 
+          <td>{{player}}</td>
+          <td><button>Remove</button></td>
+        </tr>
+      {% endfor %}
+  </table>
+</div>

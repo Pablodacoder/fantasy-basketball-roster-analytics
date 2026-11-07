@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}My App{% endblock %}</title>
+    <!-- Include Bootstrap CSS for easy tab styling -->
+     <link rel="stylesheet" href={% static 'nav_bar.css' %}>
+</head>
+<body class="container mt-4">
+    <h1>Welcome to the {{ request.resolver_match.url_name.capitalize }} Page</h1>
+    <!-- Tab Navigation -->
+    {% include "nav_bar.html" with page=request.resolver_match.url_name %}
+
+    <div class="filter">
+        <input type="text" id="name_filter" placeholder="Search here">
+        <select id="position_filter">
+            <option value="" disabled selected>Position</option>
+            <option value="PG">PG</option>
+            <option value="SG">SG</option>
+            <option value="SF">SF</option>
+            <option value="PF">PF</option>
+            <option value="C">C</option>
+            <option value="G">Any G</option>
+            <option value="F">Any F</option>
+        </select>
+        <select id="team_filter">
+            <option value="" disabled selected>Team</option>
+            <!--Fill later-->
+        </select>
+        <select id="injury_status">
+            <option value="" disabled selected>Injury</option>
+            <!--Fill later-->
+        </select>
+        <select id="availability">
+            <option value="" disabled selected>Availability</option>
+            <!--Fill later-->
+        </select>
+    </div>
+
+
+    <div class="main-area" style="display: flex; width: 800px">
+        {% include "player_list.html" with player_list=player_list %}
+
+        {% include "roster_list.html" with roster_list=roster_list %}
+        
+    </div>
+    <!-- Main Content Area -->
+    <div class="tab-content mt-3">
+        {% block content %}
+        
+        {% endblock %}
+    </div>
+
+
+    <footer>
+        <p>Page generated in <!-- PAGE_LOAD_TIME_PLACEHOLDER --></p>
+        
+    </footer>
+</body>
+</html>
