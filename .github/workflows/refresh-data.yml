@@ -1,0 +1,26 @@
+name: refresh-data
+
+on:
+  schedule:
+    - cron: "0 8 * * *"   # 3 AM Eastern (standard time)
+  workflow_dispatch:
+  push:
+    branches: [milestone-1]   # TEMPORARY: lets us test before merging, remove later
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Pull NBA data
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          INJURY_SOURCE: espn
+        run: python manage.py refresh_data
