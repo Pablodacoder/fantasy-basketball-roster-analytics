@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from engine import player
-from nba.models import Player, Injury, PlayerList
+from nba.models import Player, Injury
+from league.models import PlayerList
 from trade_analyzer.fiveStarMap import evaluate_trade_differential
 from .trade_stats import CATEGORY_LABELS, NotEnoughGames, side_baseline, build_results
-from nba.models import PlayerList
 
 MAX_PLAYERS_PER_SIDE = 4  # change to 5 if the group decides to
 

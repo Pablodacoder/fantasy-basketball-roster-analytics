@@ -10,7 +10,7 @@
 <body class="container mt-4">
     <h1>Welcome to the {{ request.resolver_match.url_name.capitalize }} Page</h1>
     <!-- Tab Navigation -->
-    {% include "nav_bar.html" with page=request.resolver_match.url_name %}
+    {% include "partials/nav_bar.html" with page=request.resolver_match.url_name %}
 
     <!-- Main Content Area -->
     <div class="tab-content mt-3">
