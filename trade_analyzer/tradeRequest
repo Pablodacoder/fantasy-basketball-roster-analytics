@@ -1,0 +1,32 @@
+from django.shortcuts import render
+from django.http import JsonResponse
+from .engine import calculate_stat_differentials
+from .ratings import calculate_star_impact
+
+def trade_evaluator_view(request):
+    """
+    Handles trade comparison requests, processes player box scores via the engine,
+    and returns computed star ratings and statistical differentials.
+    """
+    context = {}
+
+    if request.method == 'POST':
+        # Grab player IDs and season filter mode from user input
+        player_a_id = request.POST.get('player_a')
+        player_b_id = request.POST.get('player_b')
+        season_mode = request.POST.get('season_mode', 'current') # 'last', 'current', or 'both'
+
+        # Example processing pipeline hook (plug in your data retrieval logic here)
+        # stat_diffs = calculate_stat_differentials(player_a_stats, player_b_stats, season_mode)
+        # star_rating = calculate_star_impact(stat_diffs.get('PTS', 0))
+
+        context.update({
+            'player_a_id': player_a_id,
+            'player_b_id': player_b_id,
+            'season_mode': season_mode,
+        })
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'status': 'success', 'data': context})
+
+    return render(request, 'trade/trade_evaluator.html', context)
