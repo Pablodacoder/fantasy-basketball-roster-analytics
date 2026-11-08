@@ -1,9 +1,9 @@
 <tr id="list-{{player.id}}">
-  <form method="POST" action="{% url 'update' player.id %}">
+  <form method="POST" action="{% url 'update' player.player_id %}">
     {% csrf_token %}
-    <td>{{player.full_name}}</td> 
+    <td>{{player.name}}</td> 
     <td>{{player.team}}</td>
-    <td>{{player.position}}</td>
+    <td>{{player.positions}}</td>
     <td>{{player.recruited}}</td>
     <td><button type="submit">
       add

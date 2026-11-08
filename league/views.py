@@ -33,10 +33,10 @@ def roster(request):
     return render(request, template, {"player_list": [playerA, playerB], "roster": roster_list, "db_pl": pl})
 
 def update_player(request, id):
-    p = PlayerList.a.get_player_by_id(id)
-    print(f"The button did something for {p.full_name}")
+    p = PlayerList.objects.get_player_by_id(id)
+    print(f"The button did something for {p.name}")
     p.toggle_status()
-    print(f"{p.full_name} has been {p.recruited}")
+    print(f"{p.name} has been {p.recruited}")
     return redirect("roster") # TODO Change so that it does not trigger a full page refresh
 
 

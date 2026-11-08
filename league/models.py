@@ -125,9 +125,24 @@ class PlayerList(models.Model):
     objects = PlayerListManager()
     
     @property
+    def player_id(self):
+        player: Player = self.id
+        return player.id
+    
+    @property
     def name(self):
         player: Player = self.id
-        return f"{player.full_name}"
+        return player.full_name
+    
+    @property
+    def team(self):
+        player: Player = self.id
+        return player.team
+    
+    @property
+    def position(self):
+        player: Player = self.id
+        return player.positions
 
     def __str__(self):
         return f"{self.name}"
