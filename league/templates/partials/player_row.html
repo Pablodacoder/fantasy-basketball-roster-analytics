@@ -1,12 +1,19 @@
-<tr id="list-{{player.id}}">
-  <form method="POST" action="{% url 'update' player.player_id %}">
-    {% csrf_token %}
-    <td>{{player.name}}</td> 
-    <td>{{player.team}}</td>
-    <td>{{player.positions}}</td>
-    <td>{{player.recruited}}</td>
-    <td><button type="submit">
-      add
-    </button></td>
-  </form>
-</tr>
+<div draggable="true">
+  <tr id="list-{{player.id}}">
+    <form method="POST" action="{% url 'update' player.player_id %}">
+      {% csrf_token %}
+      <td>{{player.name}}</td> 
+      <td>{{player.team}}</td>
+      <td>{{player.positions}}</td>
+      <td>{{player.recruited}}</td>
+      <td>{{player.manager_name}}</td>
+      <td>
+        {% if player.recruited %}
+          <button type="submit" name="remove" value={{manager.id}}>Remove</button>
+        {% else %}
+          <button type="submit" name="add" value={{manager.id}}>Add</button>
+        {% endif %}
+      </td>
+    </form>
+  </tr>
+</div>

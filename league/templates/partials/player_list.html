@@ -5,10 +5,11 @@
       <th>Team</th>
       <th>POS</th>
       <th>Status</th>
+      <th>Manager</th>
       <th></th>
     </tr>
       {% for player in player_list %}
-        {% include "partials/player_row.html" with player=player add=True %}
+        {% include "partials/player_row.html" with player=player manager=manager %}
       {% empty %}
         No players found
       {% endfor %}

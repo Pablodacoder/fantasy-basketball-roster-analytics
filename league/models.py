@@ -140,9 +140,15 @@ class PlayerList(models.Model):
         return player.team
     
     @property
-    def position(self):
+    def positions(self):
         player: Player = self.id
-        return player.positions
+        return f"{player.positions}"
+    
+    def manager_name(self):
+        if not self.recruited or self.manager is None:
+            return ""
+        manager = self.manager
+        return manager.name
 
     def __str__(self):
         return f"{self.name}"
@@ -150,7 +156,7 @@ class PlayerList(models.Model):
     def get_status(self):
         return f"status: {self.recruited}{f" by {self.manager}" if self.manager is not None else ""}"
 
-    def add_to_roster(self, *, manager: DummyManager | None):
+    def add_to_roster(self, *, manager: DummyManager | None = None):
         if not self.recruited:
             self.recruited = True
             self.manager = manager

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from engine import player
 from nba.models import Player, Injury
-from league.models import PlayerList
+from league.models import PlayerList, DummyManager
 from trade_analyzer.fiveStarMap import evaluate_trade_differential
 from .trade_stats import CATEGORY_LABELS, NotEnoughGames, side_baseline, build_results
 
@@ -12,9 +12,14 @@ MAX_PLAYERS_PER_SIDE = 4  # change to 5 if the group decides to
 def home(request):
     return render(request, 'index.html')
 
-def roster(request):
+def roster_select(request):
+    context = {"manager_list": list(DummyManager.objects.all()) }
+    return render(request, "roster_select.html", context)
+
+def roster(request, m_id):
     template = 'roster.html'
     pl = list(PlayerList.objects.all())
+    manager = get_object_or_404(DummyManager, pk=m_id)
 
     playerA = player.Player(1, "A", "ABC", "FG", False)
     playerB = player.Player(2, "B", "ABC", ["FG", "SF"], False)
@@ -30,14 +35,27 @@ def roster(request):
                    "UTIL": None,
                    "UTIL": None,
                    "BN": "Player G"}
-    return render(request, template, {"player_list": [playerA, playerB], "roster": roster_list, "db_pl": pl})
+    return render(request, template, {"player_list": [playerA, playerB], "roster": roster_list, "db_pl": pl, "manager": manager})
 
-def update_player(request, id):
-    p = PlayerList.objects.get_player_by_id(id)
-    print(f"The button did something for {p.name}")
-    p.toggle_status()
-    print(f"{p.name} has been {p.recruited}")
-    return redirect("roster") # TODO Change so that it does not trigger a full page refresh
+def update_player(request, p_id):
+    p = PlayerList.objects.get_player_by_id(p_id)
+    
+    if request.method == "POST":
+        print(request.POST)
+        post = request.POST
+        if post.get("remove"):
+            m_id = int(post.get("remove"))
+            manager = get_object_or_404(DummyManager, pk=m_id)
+            if p.manager.id == manager.id:
+                p.toggle_status()
+            else:
+                print("Cannot remove another manager's player")
+        else:
+            m_id = int(post.get("add"))
+            manager = get_object_or_404(DummyManager, pk=m_id)
+            p.add_to_roster(manager=manager)
+    
+    return redirect("roster", m_id=m_id) # TODO Change so that it does not trigger a full page refresh
 
 
 def league(request):
