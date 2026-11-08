@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils import timezone
-from league.models import Manager
 
 
 class Team(models.Model):
@@ -167,13 +166,15 @@ class PlayerListManager(models.Manager):
     p = self.filter(id=player_id).first()
     return p
 
-  def recruit_player_by_id(self, player_id: int, manager: Manager | None):
+  def recruit_player_by_id(self, player_id: int, manager: LeagueManager | None):
     p: PlayerList = self.get_player_by_id(player_id)
     p.add_to_roster(manager=manager)
     return p
     
 
 # Create your models here.
+from league.models import LeagueManager
+
 class PlayerList(models.Model):
   id = models.PositiveIntegerField(primary_key=True)
   first_name = models.CharField(max_length=30)
