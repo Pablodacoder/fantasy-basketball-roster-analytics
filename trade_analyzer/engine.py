@@ -92,7 +92,7 @@ def get_blended_baseline(last_season_boxes, current_season_boxes, season_mode="b
         "mode": "both",
         "weights": {"current": round(curr_weight, 2), "last": round(last_weight, 2)}
     }
-    def calculate_advanced_metrics(averages):
+def calculate_advanced_metrics(averages):
     """
     Computes True Shooting Percentage (TS%) and Points Responsible For (PRF)
     from a per-game averages dictionary.

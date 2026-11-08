@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Evaluator</title>
+    <link rel="stylesheet" href="{% static 'nav_bar.css' %}">
+</head>
+<body>
+    {% include "nav_bar.html" with page=request.resolver_match.url_name %}
+
+
+{# Trade evaluator page. Data comes from the trade view in league/views.py. #}
+<h1>Trade Evaluator</h1>
+
+{% if error %}<p style="color:#b00020"><strong>{{ error }}</strong></p>{% endif %}
+
+<form method="post">
+  {% csrf_token %}
+
+  {# Two sides, with one dropdown per player slot #}
+  <div style="display:flex; gap:40px; flex-wrap:wrap">
+    <div>
+      <h2>You give</h2>
+          {% for selected in give_slots %}
+        <p><select name="give">
+          <option value="">Pick a player</option>
+          {% for p in players %}
+            <option value="{{ p.id }}" {% if p.id|stringformat:"s" == selected %}selected{% endif %}>{{ p.full_name }}</option>
+          {% endfor %}
+        </select></p>
+      {% endfor %}
+    </div>
+    <div>
+      <h2>You get</h2>
+            {% for selected in get_slots %}
+        <p><select name="get">
+          <option value="">Pick a player</option>
+          {% for p in players %}
+            <option value="{{ p.id }}" {% if p.id|stringformat:"s" == selected %}selected{% endif %}>{{ p.full_name }}</option>
+          {% endfor %}
+        </select></p>
+      {% endfor %}
+    </div>
+  </div>
+
+  {# Filters: which categories, which seasons, how many recent games #}
+  <h3>Categories</h3>
+    {% for key, label in categories.items %}
+    <label><input type="checkbox" name="categories" value="{{ key }}" {% if key in selected_cats %}checked{% endif %}> {{ label }}</label>
+  {% endfor %}
+
+  <h3>Stats from</h3>
+   <select name="season_mode">
+    <option value="both" {% if season_mode == "both" %}selected{% endif %}>Both seasons</option>
+    <option value="current" {% if season_mode == "current" %}selected{% endif %}>This season only</option>
+    <option value="last" {% if season_mode == "last" %}selected{% endif %}>Last season only</option>
+  </select>
+  <label>Last <input type="number" name="last_n" min="1" placeholder="all" value="{{ last_n }}"> games</label>
+  <p><button type="submit">Evaluate trade</button></p>
+</form>
+
+{# Results only show after the form is submitted #}
+{% if verdict %}
+  <h2>{{ verdict }}</h2>
+  <p>You give: {{ give_names|join:", " }}<br>You get: {{ get_names|join:", " }}</p>
+  <p><strong>Overall impact: {{ overall }} / 5 stars</strong></p>
+
+  <table border="1" cellpadding="6">
+    <tr><th>Category</th><th>Difference</th><th>Stars</th><th>Result</th></tr>
+    {% for r in rows %}
+      <tr><td>{{ r.label }}</td><td>{{ r.diff }}</td><td>{{ r.stars }} / 5</td><td>{{ r.direction }}</td></tr>
+    {% endfor %}
+  </table>
+
+  {% if injuries %}
+    <h3>Injury notes</h3>
+    <ul>
+      {% for i in injuries %}
+        <li>{{ i.player }}: {{ i.get_status_display }}{% if i.note %} ({{ i.note }}){% endif %}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endif %}
+</body>
+</html>
