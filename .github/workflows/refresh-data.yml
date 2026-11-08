@@ -1,12 +1,8 @@
 name: refresh-data
 
 on:
-  schedule:
-    - cron: "0 8 * * *"   # 3 AM Eastern (standard time)
-  workflow_dispatch:
-  push:
-    branches: [milestone-1]   # TEMPORARY: lets us test before merging, remove later
-
+  workflow_dispatch:   # NBA.com blocks GitHub's servers, so this only runs by hand
+  
 jobs:
   refresh:
     runs-on: ubuntu-latest

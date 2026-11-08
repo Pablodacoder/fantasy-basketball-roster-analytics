@@ -9,6 +9,7 @@ from nba.data import fetch, injuries, load
 from nba.models import BoxScore, ProjectionRun
 
 MODEL_VERSION = "m1-data-only"
+PAST_SEASONS = 2  # last season and the season before that
 
 
 class Command(BaseCommand):
@@ -16,7 +17,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("--full", action="store_true",
-                            help="Reload last season's box scores even if we already have them.")
+                            help="Reload past seasons' box scores even if we already have them.")
         parser.add_argument("--skip-injuries", action="store_true",
                             help="Don't pull injuries.")
 
@@ -44,8 +45,8 @@ class Command(BaseCommand):
         today = timezone.localdate()
         start_year = fetch.season_start_year(today)
         this_season = fetch.season_string(start_year)
-        last_season = fetch.season_string(start_year - 1)
-        self.log(f"Seasons: {this_season} (current) and {last_season} (last)")
+        past_seasons = [fetch.season_string(start_year - n) for n in range(1, PAST_SEASONS + 1)]
+        self.log(f"Seasons: {this_season} (current), past: {', '.join(past_seasons)}")
 
         teams = fetch.fetch_teams(this_season)
         self.log(f"Teams saved: {load.save_teams(teams)}")
@@ -57,21 +58,22 @@ class Command(BaseCommand):
         schedule = fetch.fetch_schedule(this_season)
         self.log(f"{this_season} games saved: {load.save_games(schedule)}")
 
-        already_have_last = BoxScore.objects.filter(game__season=last_season).exists()
-        if options["full"] or not already_have_last:
-            past_games = fetch.fetch_past_games(last_season)
-            self.log(f"{last_season} games saved: {load.save_games(past_games)}")
-            last_box = fetch.fetch_box_scores(last_season)
-            self.log(f"Players added from old box scores: {load.ensure_box_score_players(last_box)}")
-            self.log(f"{last_season} box scores saved: {load.save_box_scores(last_box)}")
-        else:
-            self.log(f"{last_season} already loaded, skipping (use --full to reload)")
+        for season in past_seasons:
+            already_have = BoxScore.objects.filter(game__season=season).exists()
+            if options["full"] or not already_have:
+                past_games = fetch.fetch_past_games(season)
+                self.log(f"{season} games saved: {load.save_games(past_games)}")
+                past_box = fetch.fetch_box_scores(season)
+                self.log(f"Players added from old box scores: {load.ensure_box_score_players(past_box)}")
+                self.log(f"{season} box scores saved: {load.save_box_scores(past_box)}")
+            else:
+                self.log(f"{season} already loaded, skipping (use --full to reload)")
 
         box = fetch.fetch_box_scores(this_season)
         load.ensure_box_score_players(box)
         self.log(f"{this_season} box scores saved: {load.save_box_scores(box)}")
 
-        for season in (this_season, last_season):
+        for season in [this_season] + past_seasons:
             self.log(f"{season} back-to-back games: {load.mark_back_to_backs(season)}")
 
         if options["skip_injuries"]:
@@ -81,4 +83,3 @@ class Command(BaseCommand):
             result = load.save_injuries(injuries.fetch_injuries(source), source)
             self.log(f"Injuries from {source}: {result['injured']} injured, "
                      f"{result['cleared']} cleared, {len(result['unmatched'])} unmatched names")
-            
