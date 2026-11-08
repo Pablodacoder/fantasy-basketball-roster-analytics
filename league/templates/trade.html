@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static 'nav_bar.css' %}">
 </head>
 <body>
-    {% include "nav_bar.html" with page=request.resolver_match.url_name %}
+    {% include "partials/nav_bar.html" with page=request.resolver_match.url_name %}
 
 
 {# Trade evaluator page. Data comes from the trade view in league/views.py. #}

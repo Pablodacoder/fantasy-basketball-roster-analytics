@@ -1,4 +1,4 @@
-<div class="player-container" style="height: 400px; width: 50%; border: 1px solid blue">
+<div class="player-container" style="height: 400px; width: 50%; border: 1px solid blue; overflow-y: auto;">
   <table style="width:100%">
     <tr>
       <th>Player</th>
@@ -8,7 +8,7 @@
       <th></th>
     </tr>
       {% for player in player_list %}
-        {% include "player_row.html" with player=player add=True %}
+        {% include "partials/player_row.html" with player=player add=True %}
       {% empty %}
         No players found
       {% endfor %}

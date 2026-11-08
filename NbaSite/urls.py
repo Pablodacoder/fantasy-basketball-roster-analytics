@@ -22,6 +22,9 @@ from league import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('roster', views.roster, name='roster'),
+    path('attempt', views.attempt, name='attempt'),
+    path('update/<int:id>', views.update_player, name='update'),
+
     path('trade', views.trade, name='trade'),
     path('league', views.league, name='league'),
     path('scoring', views.scoring, name='scoring'),

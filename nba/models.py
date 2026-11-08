@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from league.models import Manager
 
 
 class Team(models.Model):
@@ -145,3 +146,75 @@ class Projection(models.Model):
 #Injury: a player’s current status. No row means they’re healthy.
 #ProjectionRun: one row every time the nightly job runs, saying whether it worked.
 #Projection: projected stats for future games. It stays empty until Milestone 2, but the plan wants the table created now.
+
+class Status(models.TextChoices):
+    FREE = "Free"
+    WAIVER = "Waiver"
+    TAKEN = "TAKEN"
+
+class PlayerListManager(models.Manager):
+  def createPlayer(self, id: int, first_name: str, last_name: str, *, team: str = "", recruited: bool = False, status: str = Status.FREE, manager: Manager | None = None):
+    p = self.create(id=id, 
+                    first_name=first_name, 
+                    last_name=last_name,
+                    team=team,
+                    recruited=recruited,
+                    status=status,
+                    manager=manager)
+    return p
+
+  def get_player_by_id(self, player_id: int):
+    p = self.filter(id=player_id).first()
+    return p
+
+  def recruit_player_by_id(self, player_id: int, manager: Manager | None):
+    p: PlayerList = self.get_player_by_id(player_id)
+    p.add_to_roster(manager=manager)
+    return p
+    
+
+# Create your models here.
+class PlayerList(models.Model):
+  id = models.PositiveIntegerField(primary_key=True)
+  first_name = models.CharField(max_length=30)
+  last_name = models.CharField(max_length=30)
+  team = models.CharField(max_length=3)
+  recruited = models.BooleanField(default=False)
+  status = models.CharField(choices=Status, default=Status.FREE)
+  manager = models.ForeignKey(
+    'league.Manager',
+    on_delete=models.SET_DEFAULT, 
+    default=None, 
+    null=True, 
+    blank=True
+  ) 
+
+  # Manager
+  objects = models.Manager()
+  a = PlayerListManager()
+
+  @property
+  def full_name(self):
+    return f"{self.first_name} {self.last_name}"
+
+  def __str__(self):
+    return f"{self.full_name} status: {self.status}"
+
+  def get_status(self):
+    return f"status: {self.status}{f" by {self.manager}" if self.manager is not None else ""}"
+
+  def add_to_roster(self, *, manager: Manager | None):
+    if not self.recruited:
+      self.recruited = True
+      self.manager = manager
+      self.status = Status.TAKEN
+      self.save()
+    else:
+      # TODO throw already taken error
+      pass
+
+  def toggle_status(self):
+    self.recruited = not self.recruited
+    self.save()
+
+

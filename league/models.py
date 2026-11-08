@@ -80,3 +80,10 @@ class TakenPlayer(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["player", "roster"], name="unique_taken_player_per_roster"),
         ]
+
+class Manager(models.Model):
+  id = models.PositiveIntegerField(primary_key=True)
+  name = models.CharField(default="Manager")
+
+  def __str__(self):
+    return f"id: {self.id} name: {self.name}"

@@ -1,8 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
 from engine import player
-from nba.models import Player, Injury
+from nba.models import Player, Injury, PlayerList
 from trade_analyzer.fiveStarMap import evaluate_trade_differential
 from .trade_stats import CATEGORY_LABELS, NotEnoughGames, side_baseline, build_results
+from nba.models import PlayerList
 
 MAX_PLAYERS_PER_SIDE = 4  # change to 5 if the group decides to
 
@@ -12,9 +14,11 @@ def home(request):
 
 def roster(request):
     template = 'roster.html'
+    pl = list(PlayerList.objects.all())
 
-    playerA = player.Player(1, "A", "ABC", "FG", "Healthy")
-    playerB = player.Player(2, "B", "ABC", ["FG", "SF"], "Healthy")
+    playerA = player.Player(1, "A", "ABC", "FG", False)
+    playerB = player.Player(2, "B", "ABC", ["FG", "SF"], False)
+
     roster_list = {"PG": "Player A",
                    "SG": "Player B",
                    "SF": "Player C",
@@ -26,7 +30,22 @@ def roster(request):
                    "UTIL": None,
                    "UTIL": None,
                    "BN": "Player G"}
-    return render(request, template, {"player_list": [playerA, playerB], "roster": roster_list})
+    return render(request, template, {"player_list": [playerA, playerB], "roster": roster_list, "db_pl": pl})
+
+def attempt(request):
+    print(f"this button should do something")
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        return HttpResponse(f'<span style="color: green;">Success! Saved {username}.</span>')
+    return render(request, 'player_row.html')
+
+def update_player(request, id):
+    p = PlayerList.a.get_player_by_id(id)
+    print(f"The button did something for {p.full_name}")
+    p.toggle_status()
+    print(f"{p.full_name} has been {p.recruited}")
+    return redirect("roster")
+
 
 def league(request):
     template = "placeholder.html"
