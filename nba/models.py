@@ -152,7 +152,8 @@ class Status(models.TextChoices):
     TAKEN = "TAKEN"
 
 class PlayerListManager(models.Manager):
-  def createPlayer(self, id: int, first_name: str, last_name: str, *, team: str = "", recruited: bool = False, status: str = Status.FREE, manager: Manager | None = None):
+  from league.models import LeagueManager # For type checking
+  def createPlayer(self, id: int, first_name: str, last_name: str, *, team: str = "", recruited: bool = False, status: str = Status.FREE, manager: LeagueManager | None = None):
     p = self.create(id=id, 
                     first_name=first_name, 
                     last_name=last_name,
@@ -170,12 +171,11 @@ class PlayerListManager(models.Manager):
     p: PlayerList = self.get_player_by_id(player_id)
     p.add_to_roster(manager=manager)
     return p
-    
-
+  
 # Create your models here.
-from league.models import LeagueManager
-
 class PlayerList(models.Model):
+  from league.models import LeagueManager # For type checking
+  
   id = models.PositiveIntegerField(primary_key=True)
   first_name = models.CharField(max_length=30)
   last_name = models.CharField(max_length=30)
@@ -183,7 +183,7 @@ class PlayerList(models.Model):
   recruited = models.BooleanField(default=False)
   status = models.CharField(choices=Status, default=Status.FREE)
   manager = models.ForeignKey(
-    'league.Manager',
+    'league.LeagueManager',
     on_delete=models.SET_DEFAULT, 
     default=None, 
     null=True, 
@@ -193,7 +193,7 @@ class PlayerList(models.Model):
   # Manager
   objects = models.Manager()
   a = PlayerListManager()
-
+  
   @property
   def full_name(self):
     return f"{self.first_name} {self.last_name}"
@@ -204,7 +204,7 @@ class PlayerList(models.Model):
   def get_status(self):
     return f"status: {self.status}{f" by {self.manager}" if self.manager is not None else ""}"
 
-  def add_to_roster(self, *, manager: Manager | None):
+  def add_to_roster(self, *, manager: LeagueManager | None):
     if not self.recruited:
       self.recruited = True
       self.manager = manager
@@ -217,5 +217,3 @@ class PlayerList(models.Model):
   def toggle_status(self):
     self.recruited = not self.recruited
     self.save()
-
-
