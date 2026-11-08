@@ -32,19 +32,12 @@ def roster(request):
                    "BN": "Player G"}
     return render(request, template, {"player_list": [playerA, playerB], "roster": roster_list, "db_pl": pl})
 
-def attempt(request):
-    print(f"this button should do something")
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        return HttpResponse(f'<span style="color: green;">Success! Saved {username}.</span>')
-    return render(request, 'player_row.html')
-
 def update_player(request, id):
     p = PlayerList.a.get_player_by_id(id)
     print(f"The button did something for {p.full_name}")
     p.toggle_status()
     print(f"{p.full_name} has been {p.recruited}")
-    return redirect("roster")
+    return redirect("roster") # TODO Change so that it does not trigger a full page refresh
 
 
 def league(request):
