@@ -39,20 +39,17 @@ def roster(request, m_id):
 
 def update_player(request, p_id):
     p = PlayerList.objects.get_player_by_id(p_id)
-    
     if request.method == "POST":
-        print(request.POST)
         post = request.POST
-        if post.get("remove"):
-            m_id = int(post.get("remove"))
-            manager = get_object_or_404(DummyManager, pk=m_id)
+        print(post)
+        m_id = int(post.get("form_manager"))
+        manager = get_object_or_404(DummyManager, pk=m_id)
+        if post.get("action") == "remove":
             if p.manager.id == manager.id:
                 p.toggle_status()
             else:
                 print("Cannot remove another manager's player")
         else:
-            m_id = int(post.get("add"))
-            manager = get_object_or_404(DummyManager, pk=m_id)
             p.add_to_roster(manager=manager)
     
     return redirect("roster", m_id=m_id) # TODO Change so that it does not trigger a full page refresh

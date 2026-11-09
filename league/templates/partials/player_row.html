@@ -7,11 +7,13 @@
       <td>{{player.positions}}</td>
       <td>{{player.recruited}}</td>
       <td>{{player.manager_name}}</td>
+      <input type="hidden" name="form_player" value={{player.player_id}} type="number">
+      <input type="hidden" name="form_manager" value={{manager.id}} type="number">
       <td>
         {% if player.recruited %}
-          <button type="submit" name="remove" value={{manager.id}}>Remove</button>
+          <button type="submit" name="action" value={{"remove"}}>Remove</button>
         {% else %}
-          <button type="submit" name="add" value={{manager.id}}>Add</button>
+          <button type="submit" name="action" value={{"add"}}>Add</button>
         {% endif %}
       </td>
     </form>
