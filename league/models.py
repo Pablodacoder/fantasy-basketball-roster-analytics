@@ -209,6 +209,15 @@ class RosterList(models.Model):
                 self.IR = None
         
         self.save()
+
+    def remove_slot(self, slot: str):
+        slots = ["PG", "SG", "SF", "PF", "C", "G", "F", "UTIL", "BN", "IR"]
+        if slot not in slots:
+            print("Tried to remove a slot that does not exist") # TODO change to exception
+            return
+        setattr(self, slot, None)
+        self.save()
+        
         
     def clear_roster(self):
         self.PG = None

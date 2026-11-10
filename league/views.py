@@ -38,21 +38,29 @@ def update_player(request):
     if request.method == "POST":
         post = request.POST
         print(post)
-        p_id = int(post.get("form_player"))
-        p = PlayerList.objects.get_player_by_id(p_id)
+
         r_id = int(post.get("form_roster"))
         roster = get_object_or_404(RosterList, id=r_id)
         
         pos = post.get("position")
 
         if post.get("action") == "remove":
+            p_id = int(post.get("form_player"))
+            p = PlayerList.objects.get_player_by_id(p_id)
             p.toggle_status()
             roster.remove_from_roster(p_id)
             #roster.clear_roster()
-        else:
+        elif post.get("action") == "add":
+            p_id = int(post.get("form_player"))
+            p = PlayerList.objects.get_player_by_id(p_id)
             result = roster.add_to_roster(p.id, pos)
+            if result == 0:
+                p.add_to_roster()
+        elif post.get("remove"):
+            roster.remove_slot(post.get("remove"))
+            print(f"Removed from slot {post.get("remove")}")
             
-            p.add_to_roster()
+            
     
     return redirect("roster", r_id=1) # TODO Change so that it does not trigger a full page refresh
 
@@ -61,7 +69,7 @@ def league(request):
     template = "placeholder.html"
     return render(request, template)
 
-def scoring(request):
+def search(request):
     template = "placeholder.html"
     return render(request, template)
 
