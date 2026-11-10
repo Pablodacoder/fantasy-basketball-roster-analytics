@@ -28,7 +28,7 @@ def roster_select(request):
 def roster(request, r_id):
     template = 'roster.html'
     pl = list(PlayerList.objects.filter(id__is_active=True).values("id_id", "id__full_name", "id__team__abbreviation", "id__positions", "recruited", "id__is_active").order_by("id_id"))
-    print(pl[0])
+    
     roster = get_object_or_404(RosterList, id=r_id)
     
     return render(request, template, {"db_pl": pl, "roster": roster})
