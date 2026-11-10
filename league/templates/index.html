@@ -7,7 +7,15 @@
 <body>
     <h1>Home Page!</h1>
 
-    Links to other pages:
-    <a href="{% url 'roster_select' %}">Roster</a>
+    <div id="login">
+        Username <input type="text" name="username">
+        Password <input type="text" name="password">
+        <button type="submit">Log in</button>
+    </div>
+
+    <form action="{% url 'trade' %}">
+        <button>Enter site</button>
+    </form>
+
 </body>
 </html>

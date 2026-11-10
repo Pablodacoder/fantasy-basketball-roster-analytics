@@ -26,7 +26,6 @@ urlpatterns = [
     path('update', views.update_player, name='update'),
 
     path('trade', views.trade, name='trade'),
-    path('league', views.league, name='league'),
-    path('scoring', views.scoring, name='scoring'),
+    path('search', views.search, name='search'),
     path('admin/', admin.site.urls),
 ]

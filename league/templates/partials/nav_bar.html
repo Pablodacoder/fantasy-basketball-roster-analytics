@@ -2,16 +2,16 @@
 Put this line in head 
 {% include "nav_bar.html" with page=request.resolver_match.url_name %}
 {% endcomment %}
-
-<nav class="nav nav-tabs">
-  <a class="nav-link {% if page == 'home' %}active{% endif %}" 
-    href="{% url 'home' %}">Home</a>
-  <a class="nav-link {% if page == 'roster' %}active{% endif %}" 
-    href="{% url 'roster_select' %}">Roster</a>
-  <a class="nav-link {% if page == 'trade' %}active{% endif %}" 
-    href="{% url 'trade' %}">Trade</a>
-  <a class="nav-link {% if page == 'league' %}active{% endif %}" 
-    href="{% url 'league' %}">League</a>
-  <a class="nav-link {% if page == 'scoring' %}active{% endif %}" 
-    href="{% url 'scoring' %}">Scoring</a>
-</nav>
+<div class="banner">
+  <div class="name"><h1>NBA TRADE EVALUATOR</h1></div>
+  <nav class="nav-tabs">
+    <a class="nav-link {% if page == 'home' %}active{% endif %}" 
+      href="{% url 'home' %}">Home</a>
+    <a class="nav-link {% if page == 'Search' %}active{% endif %}" 
+      href="{% url 'search' %}">Search</a>
+    <a class="nav-link {% if page == 'trade' %}active{% endif %}" 
+      href="{% url 'trade' %}">Trade</a>
+    <a class="nav-link {% if page == 'roster' or page == 'roster_select' %}active{% endif %}" 
+      href="{% url 'roster_select' %}">My Roster</a>
+  </nav>
+</div>
