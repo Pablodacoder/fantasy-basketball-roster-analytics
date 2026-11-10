@@ -1,14 +1,20 @@
 <div draggable="true">
   <tr id="list-{{player.id}}">
-    <form method="POST" action="{% url 'update' player.player_id %}">
+    <form method="POST" action="{% url 'update' %}">
       {% csrf_token %}
-      <td>{{player.name}}</td> 
-      <td>{{player.team}}</td>
-      <td>{{player.positions}}</td>
+      <td>{{player.id__full_name}}</td> 
+      <td>{{player.id__team__abbreviation}}</td>
+      <td>{{player.id__positions}}</td>
       <td>{{player.recruited}}</td>
-      <td>{{player.manager_name}}</td>
-      <input type="hidden" name="form_player" value={{player.player_id}} type="number">
-      <input type="hidden" name="form_manager" value={{manager.id}} type="number">
+      <td><select name="position">
+        {% for position in player.id__positions %}
+          <option value={{position}}>{{position}}</option>
+        {% empty %}
+          No valid positions found
+        {% endfor %}
+      </select></td>
+      <input type="hidden" name="form_player" value={{player.id_id}} type="number">
+      <input type="hidden" name="form_roster" value="{{roster.id}}" type="number">
       <td>
         {% if player.recruited %}
           <button type="submit" name="action" value={{"remove"}}>Remove</button>

@@ -1,17 +1,50 @@
 <div class="roster-container" style="height: 400px; width: 50%; border: 1px solid blue">
-  <h3>{{manager.name}} Roster</h3>
+  <h3>{{roster.name}} Roster</h3>
   <table style="width: 100%">
     <tr>
       <th></th>
       <th></th>
       <th></th>
     </tr>
-      {% for role, player in roster_list.items %}
         <tr>
-          <td style="font-weight: bold;">{{role}}</td> 
-          <td>{{player}}</td>
+          <td>PG</td><td>{{roster.PG}}</td>
           <td><button>Remove</button></td>
         </tr>
-      {% endfor %}
+        <tr>
+          <td>SG</td><td>{{roster.SG}}</td>
+          <td><button>Remove</button></td>
+        </tr>
+        <tr>
+          <td>SF</td><td>{{roster.SF}}</td>
+          <td><button>Remove</button></td>
+        </tr>
+        <tr>
+          <td>PF</td><td>{{roster.PF}}</td>
+          <td><button>Remove</button></td>
+        </tr>
+        <tr>
+          <td>C</td><td>{{roster.C}}</td>
+          <td><button>Remove</button></td>
+        </tr>
+        <tr>
+          <td>G</td><td>{{roster.G}}</td>
+          <td><button>Remove</button></td>
+        </tr>
+        <tr>
+          <td>F</td><td>{{roster.F}}</td>
+          <td><button>Remove</button></td>
+        </tr>
+        <tr>
+          <td>UTIL</td><td>{{roster.UTIL}}</td>
+          <td><button>Remove</button></td>
+        </tr>
+        <tr>
+          <td>BN</td><td>{{roster.BN}}</td>
+          <td><button>Remove</button></td>
+        </tr>
+        <tr>
+          <td>IR</td><td>{{roster.IR}}</td>
+          <td><button>Remove</button></td>
+        </tr>
   </table>
 </div>

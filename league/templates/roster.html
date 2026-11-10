@@ -8,7 +8,7 @@
      <link rel="stylesheet" href={% static 'nav_bar.css' %}>
 </head>
 <body class="container mt-4">
-    <h1>Welcome to the {{ request.resolver_match.url_name.capitalize }} Page for {{manager.name}}</h1>
+    <h1>Welcome to the {{ request.resolver_match.url_name.capitalize }} Page for {{roster.name}}</h1>
     <!-- Tab Navigation -->
     {% include "partials/nav_bar.html" with page=request.resolver_match.url_name %}
 
@@ -40,10 +40,12 @@
 
     <a href="{% url 'roster_select' %}">Back</a>
 
-    <div class="main-area" style="display: flex; width: 800px">
-        {% include "partials/player_list.html" with player_list=db_pl manager=manager%}
+    <div class="main-area" style="display: flex; width: 1000px">
+        
+        {% include "partials/player_list.html" with player_list=db_pl roster=roster %}
 
-        {% include "partials/roster_list.html" with roster_list=roster manager=manager%}
+        {% include "partials/roster_list.html" with roster_list=roster %}
+        
     </div>
     <!-- Main Content Area -->
     <div class="tab-content mt-3">

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from engine import player
 from nba.models import Player, Injury
-from league.models import PlayerList, DummyManager
+from league.models import PlayerList, RosterList
 from trade_analyzer.fiveStarMap import evaluate_trade_differential
 from .trade_stats import CATEGORY_LABELS, NotEnoughGames, side_baseline, build_results
 
@@ -13,46 +13,48 @@ def home(request):
     return render(request, 'index.html')
 
 def roster_select(request):
-    context = {"manager_list": list(DummyManager.objects.all()) }
+    context = {"roster_list": RosterList.objects.all()}
+    
+    if request.method == "POST":
+        print(request.POST)
+        roster_name = request.POST['roster_name']
+        if roster_name != "":
+            print(f"Creating: {roster_name}")
+            RosterList.objects.create(name=roster_name)
+            context = {"roster_list": list(RosterList.objects.all())}
+    
     return render(request, "roster_select.html", context)
 
-def roster(request, m_id):
+def roster(request, r_id):
     template = 'roster.html'
-    pl = list(PlayerList.objects.all())
-    manager = get_object_or_404(DummyManager, pk=m_id)
+    pl = list(PlayerList.objects.filter(id__is_active=True).values("id_id", "id__full_name", "id__team__abbreviation", "id__positions", "recruited", "id__is_active").order_by("id_id"))
+    print(pl[0])
+    roster = get_object_or_404(RosterList, id=r_id)
+    
+    return render(request, template, {"db_pl": pl, "roster": roster})
 
-    playerA = player.Player(1, "A", "ABC", "FG", False)
-    playerB = player.Player(2, "B", "ABC", ["FG", "SF"], False)
-
-    roster_list = {"PG": "Player A",
-                   "SG": "Player B",
-                   "SF": "Player C",
-                   "PF": None,
-                   "C": "Player D",
-                   "G": "Player E",
-                   "F": "Player F",
-                   "UTIL": None,
-                   "UTIL": None,
-                   "UTIL": None,
-                   "BN": "Player G"}
-    return render(request, template, {"player_list": [playerA, playerB], "roster": roster_list, "db_pl": pl, "manager": manager})
-
-def update_player(request, p_id):
-    p = PlayerList.objects.get_player_by_id(p_id)
+def update_player(request):
+    
     if request.method == "POST":
         post = request.POST
         print(post)
-        m_id = int(post.get("form_manager"))
-        manager = get_object_or_404(DummyManager, pk=m_id)
+        p_id = int(post.get("form_player"))
+        p = PlayerList.objects.get_player_by_id(p_id)
+        r_id = int(post.get("form_roster"))
+        roster = get_object_or_404(RosterList, id=r_id)
+        
+        pos = post.get("position")
+
         if post.get("action") == "remove":
-            if p.manager.id == manager.id:
-                p.toggle_status()
-            else:
-                print("Cannot remove another manager's player")
+            p.toggle_status()
+            roster.remove_from_roster(p_id)
+            #roster.clear_roster()
         else:
-            p.add_to_roster(manager=manager)
+            result = roster.add_to_roster(p.id, pos)
+            
+            p.add_to_roster()
     
-    return redirect("roster", m_id=m_id) # TODO Change so that it does not trigger a full page refresh
+    return redirect("roster", r_id=1) # TODO Change so that it does not trigger a full page refresh
 
 
 def league(request):
