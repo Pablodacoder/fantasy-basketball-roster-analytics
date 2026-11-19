@@ -111,103 +111,22 @@ class RosterList(models.Model):
         # Returns 1 if fail
         if type(player) is int:
             player = Player.objects.get(player)
-        match position:
-            case "PG":
-                if self.PG is None:
-                    self.PG = player
-                    self.save()
-                    return 0
-            case "SG":
-                if self.SG is None:
-                    self.SG = player
-                    self.save()
-                    return 0
-            case "SF":
-                if self.SF is None:
-                    self.SF = player
-                    self.save()
-                    return 0
-            case "PF":
-                if self.PF is None:
-                    self.PF = player
-                    self.save()
-                    return 0
-            case "C":
-                if self.C is None:
-                    self.C = player
-                    self.save()
-                    return 0
-            case "G":
-                if self.G is None:
-                    self.G = player
-                    self.save()
-                    return 0
-            case "F":
-                if self.F is None:
-                    self.F = player
-                    self.save()
-                    return 0
-            case "UTIL":
-                if self.UTIL is None:
-                    self.UTIL = player
-                    self.save()
-                    return 0
-            case "BN":
-                if self.BN is None:
-                    self.BN = player
-                    self.save()
-                    return 0
-            case "IR":
-                if self.IR is None:
-                    self.IR = player
-                    self.save()
-                    return 0
-            case _:
-                print("Invalid position") # TODO add exception
-        return 1       
+
+        slot = getattr(self, position)
+        if slot is None:
+            setattr(self, position, player)
+            self.save()
+            return 0
+        return 1
         
     def remove_from_roster(self, p_id: int):
         print(f"Attempting to remove {p_id}")
-        if self.PG is not None:
-            if self.PG.id == p_id:
-                self.PG = None
-                
-        if self.SG is not None:
-            if self.SG.id == p_id:
-                self.SG = None
-                
-        if self.SF is not None:
-            if self.SF.id == p_id:
-                self.SF = None
-                
-        if self.PF is not None:
-            if self.PF.id == p_id:
-                self.PF = None
-                
-        if self.C is not None:
-            if self.C.id == p_id:
-                self.C = None
-                
-        if self.G is not None:
-            if self.G.id == p_id:
-                self.G = None
-                
-        if self.F is not None:
-            if self.F.id == p_id:
-                self.F = None
-                
-        if self.UTIL is not None:
-            if self.UTIL.id == p_id:
-                self.UTIL = None
-                
-        if self.BN is not None:
-            if self.BN.id == p_id:
-                self.BN = None
-                
-        if self.IR is not None:
-            if self.IR.id == p_id:
-                self.IR = None
-        
+        positions = ["PG", "SG", "SF", "PF", "C", "G", "F", "UTIL", "BN", "IR"]
+        for position in positions:
+            slot = getattr(self, position)
+            if slot is not None:
+                if slot.id == p_id:
+                    setattr(self, position, None)
         self.save()
 
     def remove_slot(self, slot: str):
