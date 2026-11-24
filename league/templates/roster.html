@@ -1,47 +1,26 @@
 {% load static %}
+{% load django_htmx %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}My App{% endblock %}</title>
     <!-- Include Bootstrap CSS for easy tab styling -->
-     <link rel="stylesheet" href={% static 'nav_bar.css' %}>
+    {% htmx_script %}
+    <link rel="stylesheet" href={% static 'nav_bar.css' %}>
 </head>
 <body class="container mt-4">
     <!-- Tab Navigation -->
     {% include "partials/nav_bar.html" with page=request.resolver_match.url_name %}
 
-    <div class="filter" style="display:none;">
-        <input type="text" id="name_filter" placeholder="Search here">
-        <select id="position_filter">
-            <option value="" disabled selected>Position</option>
-            <option value="PG">PG</option>
-            <option value="SG">SG</option>
-            <option value="SF">SF</option>
-            <option value="PF">PF</option>
-            <option value="C">C</option>
-            <option value="G">Any G</option>
-            <option value="F">Any F</option>
-        </select>
-        <select id="team_filter">
-            <option value="" disabled selected>Team</option>
-            <!--Fill later-->
-        </select>
-        <select id="injury_status">
-            <option value="" disabled selected>Injury</option>
-            <!--Fill later-->
-        </select>
-        <select id="availability">
-            <option value="" disabled selected>Availability</option>
-            <!--Fill later-->
-        </select>
-    </div>
+    {% include "partials/search_filter.html" %}
 
     <a href="{% url 'roster_select' %}">Back</a>
 
     <div class="main-area" style="display: flex; width: 1000px">
-        
-        {% include "partials/player_list.html" with player_list=db_pl roster=roster %}
+        <div id="player-list" class="player-container" style="height: 400px; width: 50%; border: 1px solid blue; overflow-y: auto;">
+            {% include "partials/player_list.html" with player_list=db_pl roster=roster %}
+        </div>
 
         {% include "partials/roster_list.html" with roster_list=roster %}
         

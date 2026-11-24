@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
 from django.http import HttpResponse
 from engine import player
 from nba.models import Player, Injury
@@ -34,7 +35,6 @@ def roster(request, r_id):
     return render(request, template, {"db_pl": pl, "roster": roster})
 
 def update_player(request):
-    
     if request.method == "POST":
         post = request.POST
         print(post)
@@ -63,6 +63,22 @@ def update_player(request):
             
     
     return redirect("roster", r_id=1) # TODO Change so that it does not trigger a full page refresh
+
+def refresh_list(request):
+    if request.method == "POST":
+        post = request.POST
+        name_filter = post['name_filter']
+        position_filter = post.get("position_filter", "")
+        team_filter = post.get("team_filter", "")
+        injury_filter = post.get("injury_filter", "")
+        
+        pl = (PlayerList.objects.filter(id__is_active=True)
+                                .filter(id__full_name__icontains=name_filter)
+                                .filter(id__positions__icontains=position_filter)
+                                .values("id_id", "id__full_name", "id__team__abbreviation", "id__positions", "recruited", "id__is_active")
+                                .order_by("id_id"))
+    return render(request, "partials/player_list.html", {"player_list": pl})
+        
 
 
 def league(request):

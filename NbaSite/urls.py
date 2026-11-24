@@ -24,6 +24,7 @@ urlpatterns = [
     path('roster_select', views.roster_select, name='roster_select'),
     path('roster/<int:r_id>', views.roster, name='roster'),
     path('update', views.update_player, name='update'),
+    path('refresh_list', views.refresh_list, name='refresh_list'),
 
     path('trade', views.trade, name='trade'),
     path('search', views.search, name='search'),
