@@ -8,3 +8,5 @@ gunicorn>=22.0
 nba_api>=1.10
 pandas>=2.2
 requests>=2.32
+
+django-htmx
