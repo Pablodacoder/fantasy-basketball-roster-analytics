@@ -28,5 +28,9 @@ urlpatterns = [
 
     path('trade', views.trade, name='trade'),
     path('search', views.search, name='search'),
+    path('refresh_search', views.refresh_search, name='refresh_search'),
+    path('search/<int:p_id>', views.player_details, name='player_details'),
+    
+    
     path('admin/', admin.site.urls),
 ]

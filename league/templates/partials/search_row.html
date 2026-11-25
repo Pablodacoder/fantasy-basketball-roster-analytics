@@ -1,0 +1,7 @@
+<div>
+    <tr id="list-{{player.id}}">
+        <td><a href="{% url 'player_details' p_id=player.id %}">{{player.full_name}}<a></td> 
+        <td>{{player.team__abbreviation}}</td>
+        <td>{{player.positions}}</td>
+    </tr>
+</div>

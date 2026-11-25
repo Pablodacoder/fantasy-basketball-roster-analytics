@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}My App{% endblock %}</title>
+    <!-- Include Bootstrap CSS for easy tab styling -->
+    <link rel="stylesheet" href={% static 'nav_bar.css' %}>
+</head>
+<body class="container mt-4">
+    <!-- Tab Navigation -->
+    {% include "partials/nav_bar.html" with page=request.resolver_match.url_name %}
+
+    <!-- Main Content Area -->
+    <div class="tab-content mt-3">
+        {% block content %}
+        <h1>Detailed stats for {{player.full_name}}</h1>
+        {% endblock %}
+    </div>
+
+
+    <footer>
+        <p>Page generated in <!-- PAGE_LOAD_TIME_PLACEHOLDER --></p>
+        
+    </footer>
+</body>
+</html>

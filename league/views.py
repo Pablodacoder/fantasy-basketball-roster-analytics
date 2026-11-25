@@ -86,8 +86,38 @@ def league(request):
     return render(request, template)
 
 def search(request):
-    template = "placeholder.html"
-    return render(request, template)
+    template = "player_search.html"
+    
+    player_list = (Player.objects.filter(is_active=True)
+                    .values("id", "full_name", "team__abbreviation", "positions")
+                    .order_by("id"))
+    context = {"player_list": player_list}
+    
+    return render(request, template, context)
+
+def refresh_search(request):
+    if request.method == "POST":
+        post = request.POST
+        
+        name_filter = post['name_filter']
+        position_filter = post.get("position_filter", "")
+        team_filter = post.get("team_filter", "")
+        injury_filter = post.get("injury_filter", "")
+        
+        player_list = (Player.objects.filter(is_active=True)
+                        .filter(full_name__icontains=name_filter)
+                        .filter(positions__icontains=position_filter)
+                        .values("id", "full_name", "team__abbreviation", "positions")
+                        .order_by("id"))
+    
+    context = {"player_list": player_list}
+    return render(request, "partials/search_list.html", context)
+
+def player_details(request, p_id):
+    p = get_object_or_404(Player, id=p_id)
+    print(f"Requesting {p}")
+    p_name = p.full_name
+    return render(request, "player_details.html", {"player": p})
 
 
 def trade(request):
