@@ -1,0 +1,14 @@
+
+<table style="width:100%">
+  <tr>
+    <th>Player</th>
+    <th>Team</th>
+    <th>POS</th>
+    <th></th>
+  </tr>
+    {% for player in player_list %}
+      {% include "partials/search_row.html" with player=player %}
+    {% empty %}
+      No players found
+    {% endfor %}
+</table>

@@ -6,8 +6,19 @@ it is then linked with
 <link rel="stylesheet" href={% static 'nav_bar.css' %}>
 */
 
+.banner {
+  display: flex;
+  background-color: maroon;
+  height: 50px;
+  align-items: center;
+}
+
+.name {
+  color: white;
+}
+
 nav a {
-  color: black;
+  color: beige;
   padding: 10px;
   margin: 5px;
 }

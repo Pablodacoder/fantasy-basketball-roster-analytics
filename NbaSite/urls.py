@@ -21,9 +21,16 @@ from league import views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('roster', views.roster, name='roster'),
+    path('roster_select', views.roster_select, name='roster_select'),
+    path('roster/<int:r_id>', views.roster, name='roster'),
+    path('update', views.update_player, name='update'),
+    path('refresh_list', views.refresh_list, name='refresh_list'),
+
     path('trade', views.trade, name='trade'),
-    path('league', views.league, name='league'),
-    path('scoring', views.scoring, name='scoring'),
+    path('search', views.search, name='search'),
+    path('refresh_search', views.refresh_search, name='refresh_search'),
+    path('search/<int:p_id>', views.player_details, name='player_details'),
+    
+    
     path('admin/', admin.site.urls),
 ]

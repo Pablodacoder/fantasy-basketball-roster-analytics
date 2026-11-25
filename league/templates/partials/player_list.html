@@ -1,0 +1,16 @@
+
+<table style="width:100%">
+  <tr>
+    <th>Player</th>
+    <th>Team</th>
+    <th>POS</th>
+    <th>Status</th>
+    <th>Recruit for</th>
+    <th></th>
+  </tr>
+    {% for player in player_list %}
+      {% include "partials/player_row.html" with player=player roster=roster %}
+    {% empty %}
+      No players found
+    {% endfor %}
+</table>

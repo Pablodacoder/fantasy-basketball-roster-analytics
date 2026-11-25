@@ -1,0 +1,41 @@
+{% load static %}
+{% load django_htmx %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}My App{% endblock %}</title>
+
+    {% htmx_script %}
+
+    <link rel="stylesheet" href={% static 'nav_bar.css' %}>
+</head>
+<body class="container mt-4">
+    <!-- Tab Navigation -->
+    {% include "partials/nav_bar.html" with page=request.resolver_match.url_name %}
+
+    <!-- Main Content Area -->
+    <div class="tab-content mt-3">
+        {% block content %}
+        
+        <form   hx-post="{% url 'refresh_search' %}"
+                hx-target='#player-list'
+                hx-swap='innerHTML'>
+            {% csrf_token %}
+            {% include "partials/search_filter.html" %}
+        </form>
+
+        <div id="player-list" class="player-container" style="height: 400px; width: 50%; border: 1px solid blue; overflow-y: auto;">
+            {% include "partials/search_list.html" with player_list=player_list %}
+        </div>
+
+        {% endblock %}
+    </div>
+
+
+    <footer>
+        <p>Page generated in <!-- PAGE_LOAD_TIME_PLACEHOLDER --></p>
+        
+    </footer>
+</body>
+</html>
